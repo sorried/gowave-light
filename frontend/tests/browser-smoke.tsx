@@ -26,6 +26,7 @@ import { NavigationProgress, nprogress } from '../src/shared/ui/navigation-progr
 import { SafeSvg } from '../src/shared/ui/safe-svg'
 import { Sparkline } from '../src/shared/ui/sparkline'
 import { RemarksManager } from '../src/widgets/dashboard/subscription-settings/settings/cards/managers/remarks-manager.widget'
+import { runWarpSmokeTests } from './warp-smoke'
 
 function assert(condition: unknown, message: string): void {
     if (!condition) throw new Error(message)
@@ -570,6 +571,7 @@ async function run() {
     window.fetch = originalFetch
     languageDetector.cacheUserLanguage?.('ru-RU')
     assert(languageDetector.detect()?.[0] === 'ru', 'language cache and regional normalization')
+    await runWarpSmokeTests(root, container)
     root.unmount()
 }
 

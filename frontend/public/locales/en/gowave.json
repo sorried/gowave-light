@@ -1876,5 +1876,29 @@
   "node-error-message": {
     "config-not-applied": "New config not applied",
     "config-not-applied-description": "Xray rejected the config, so the node keeps serving the previous one. Fix the config profile and save it again."
+  },
+  "warp": {
+    "description": "Send selected node traffic through Cloudflare WARP using an Xray WireGuard outbound.",
+    "accept-terms": "I accept the application terms of",
+    "register": "Create WARP profile",
+    "registered": "WARP settings received. Add them to the editor, check the config and save the profile.",
+    "settings": "Tunnel settings",
+    "manual": "You can also enter settings from an existing WARP WireGuard profile.",
+    "tag": "Outbound tag",
+    "private-key": "Private key",
+    "public-key": "Peer public key",
+    "address": "Tunnel addresses",
+    "endpoint": "Endpoint",
+    "reserved": "Reserved bytes",
+    "routing": "Traffic to send through WARP",
+    "route-none": "Add outbound only",
+    "route-domains": "Selected domains",
+    "route-remaining": "Traffic not matched by existing rules",
+    "domains": "Domains, one per line",
+    "remaining-hint": "Existing rules keep their priority. Check the config and save the profile to apply it to linked nodes.",
+    "save-hint": "Settings are added to the editor. Check the config and save the profile to apply it to linked nodes.",
+    "add": "Add to profile",
+    "invalid-config": "Could not add WARP to this config.",
+    "editor-unavailable": "The config editor is not ready."
   }
 }

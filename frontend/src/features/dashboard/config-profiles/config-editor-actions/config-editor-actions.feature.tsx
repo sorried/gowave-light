@@ -12,6 +12,7 @@ import { runAsync } from '@shared/lib/run-async'
 import { useDownloadTemplate } from '@shared/ui/load-templates/use-download-template'
 import { BaseOverlayHeader } from '@shared/ui/overlays/base-overlay-header'
 import { KeypairGeneratorWidget } from '@widgets/dashboard/config-profiles/keypair-generator/keypair-generator.widget'
+import { WarpWidget } from '@widgets/dashboard/config-profiles/warp/warp.widget'
 import { useTranslation } from 'react-i18next'
 import { PiCheck, PiCheckSquareOffset, PiCopy, PiFloppyDisk } from 'react-icons/pi'
 import {
@@ -224,6 +225,40 @@ export function ConfigEditorActionsFeature(props: Props) {
                     {t('config-editor-actions.feature.save-anyway')}
                 </Button>
             )}
+
+            <Button
+                disabled={isUpdating}
+                onClick={() => {
+                    const id = modals.open({
+                        title: 'Cloudflare WARP',
+                        size: 'lg',
+                        children: (
+                            <WarpWidget
+                                getConfig={() => JSON.parse(editorRef.current?.getValue() ?? '')}
+                                onApply={(config) => {
+                                    const instance = editorRef.current
+                                    if (!instance) throw new Error(t('warp.editor-unavailable'))
+                                    const model = instance.getModel()
+                                    if (!model) throw new Error(t('warp.editor-unavailable'))
+                                    instance.pushUndoStop()
+                                    instance.executeEdits('warp', [
+                                        {
+                                            range: model.getFullModelRange(),
+                                            text: JSON.stringify(config, null, 2)
+                                        }
+                                    ])
+                                    instance.pushUndoStop()
+                                    setHasUnsavedChanges(true)
+                                    modals.close(id)
+                                }}
+                            />
+                        )
+                    })
+                }}
+                variant="default"
+            >
+                WARP
+            </Button>
 
             <Group gap={0} wrap="nowrap">
                 <Menu
