@@ -1,0 +1,30 @@
+[
+  {
+    "scenario": "mixed reads",
+    "duration_s": 20.014,
+    "concurrency": 8,
+    "requests": 34463,
+    "requests_per_second": 1721.9,
+    "p50_ms": 3.402,
+    "p95_ms": 10.547,
+    "errors": 0,
+    "error_examples": [],
+    "rss_before_bytes": 35311616,
+    "rss_max_bytes": 44859392,
+    "process_hwm_bytes": 44068864
+  },
+  {
+    "scenario": "subscriptions",
+    "duration_s": 20.003,
+    "concurrency": 8,
+    "requests": 31647,
+    "requests_per_second": 1582.1,
+    "p50_ms": 4.091,
+    "p95_ms": 15.752,
+    "errors": 0,
+    "error_examples": [],
+    "rss_before_bytes": 41160704,
+    "rss_max_bytes": 41377792,
+    "process_hwm_bytes": 44068864
+  }
+]

@@ -1,0 +1,14 @@
+goos: linux
+goarch: amd64
+pkg: gowave/internal/users
+cpu: 11th Gen Intel(R) Core(TM) i7-11700F @ 2.50GHz
+BenchmarkGenerateShortUUID/16         	 7486920	       161.2 ns/op	      16 B/op	       1 allocs/op
+BenchmarkGenerateShortUUID/16         	 7531809	       160.6 ns/op	      16 B/op	       1 allocs/op
+BenchmarkGenerateShortUUID/16         	 7502206	       160.9 ns/op	      16 B/op	       1 allocs/op
+BenchmarkGenerateShortUUID/32         	 6318783	       192.0 ns/op	      32 B/op	       1 allocs/op
+BenchmarkGenerateShortUUID/32         	 6255447	       191.6 ns/op	      32 B/op	       1 allocs/op
+BenchmarkGenerateShortUUID/32         	 6248950	       191.7 ns/op	      32 B/op	       1 allocs/op
+BenchmarkGenerateShortUUID/64         	 3072438	       389.8 ns/op	     128 B/op	       2 allocs/op
+BenchmarkGenerateShortUUID/64         	 3045895	       404.4 ns/op	     128 B/op	       2 allocs/op
+BenchmarkGenerateShortUUID/64         	 2817560	       416.2 ns/op	     128 B/op	       2 allocs/op
+PASS
