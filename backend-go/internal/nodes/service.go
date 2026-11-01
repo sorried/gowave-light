@@ -1147,22 +1147,20 @@ func (s *Service) SyncAllUsersToNode(node *database.Node) {
 	if node == nil {
 		return
 	}
-	var users []database.User
-	if err := s.db.Where("status = ?", "ACTIVE").Find(&users).Error; err != nil {
-		log.Printf("[NODES] reconcile: %v", err)
-		return
-	}
 	revision := uint64(time.Now().UnixNano())
 	if err := s.db.Transaction(func(tx *gorm.DB) error {
 		if err := tx.Model(&database.Job{}).Where("target = ? AND kind = ? AND state = ?", node.UUID, "user-sync", "failed").Updates(map[string]interface{}{"state": "pending", "attempts": 0, "available_at": time.Now().UTC()}).Error; err != nil {
 			return err
 		}
-		for _, user := range users {
-			if err := jobs.Enqueue(tx, "user-sync", strconv.FormatUint(user.ID, 10), node.UUID, revision, jobs.UserSync{ID: user.ID, VlessUUID: user.VlessUUID}); err != nil {
-				return err
+		var users []database.User
+		return tx.Select("id", "vless_uuid").Where("status = ?", "ACTIVE").FindInBatches(&users, 500, func(_ *gorm.DB, _ int) error {
+			for _, user := range users {
+				if err := jobs.Enqueue(tx, "user-sync", strconv.FormatUint(user.ID, 10), node.UUID, revision, jobs.UserSync{ID: user.ID, VlessUUID: user.VlessUUID}); err != nil {
+					return err
+				}
 			}
-		}
-		return nil
+			return nil
+		}).Error
 	}); err != nil {
 		log.Printf("[NODES] schedule reconciliation: %v", err)
 	}
