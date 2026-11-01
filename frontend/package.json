@@ -2,15 +2,15 @@
   "name": "@gowave/frontend",
   "version": "3.4.4",
   "private": false,
-  "homepage": "https://github.com/aaaSaZaN/gowave",
+  "homepage": "https://github.com/sorried/gowave-light",
   "bugs": {
-    "url": "https://github.com/aaaSaZaN/gowave/issues"
+    "url": "https://github.com/sorried/gowave-light/issues"
   },
   "license": "AGPL-3.0-only",
   "author": "GoWave Contributors",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/aaaSaZaN/gowave.git"
+    "url": "git+https://github.com/sorried/gowave-light.git"
   },
   "type": "module",
   "scripts": {

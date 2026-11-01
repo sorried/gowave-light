@@ -104,7 +104,7 @@ export function DisclaimerOverlay() {
                                 anchor: (
                                     <Anchor
                                         fw={600}
-                                        href="https://github.com/aaaSaZaN/gowave/blob/main/LICENSE"
+                                        href="https://github.com/sorried/gowave-light/blob/main/LICENSE"
                                         rel="noopener noreferrer"
                                         size="xs"
                                         target="_blank"

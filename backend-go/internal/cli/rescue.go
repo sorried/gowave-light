@@ -213,7 +213,7 @@ func printUsage() {
 	fmt.Println("  migrate pg-to-sqlite [dsn] [dest]    Migrate upstream panel PostgreSQL data to SQLite")
 	fmt.Println("  migrate to-docker                    Move this SQLite install to Docker + PostgreSQL")
 	fmt.Println("      --dir <path>                     Compose project directory (default /opt/gowave-docker)")
-	fmt.Println("      --image <ref>                    Panel image (default ghcr.io/aaasazan/gowave:latest)")
+	fmt.Println("      --image <ref>                    Panel image (default ghcr.io/sorried/gowave-light:latest)")
 	fmt.Println("      --from <path>                    Current install directory (default: this binary's)")
 	fmt.Println("      --yes                            Do not ask for confirmation")
 	fmt.Println("  --migrate-sqlite-to-pg [src] [dsn]   Copy GoWave SQLite data into an existing PostgreSQL")

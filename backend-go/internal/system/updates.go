@@ -136,7 +136,7 @@ func DockerUpdateCommand(channel string) string {
 
 // InstallerUpdateCommand is shown when the native service has no update helper,
 // for example on installations made before the helper existed.
-const InstallerUpdateCommand = `sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/aaaSaZaN/gowave/main/install.sh)"`
+const InstallerUpdateCommand = `sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/sorried/gowave-light/main/install.sh)"`
 
 // installerCommand updates without prompts and lands on the given channel.
 func installerCommand(channel string) string {

@@ -31,7 +31,7 @@ var dockerComposeTemplate []byte
 
 const (
 	defaultDockerDir   = "/opt/gowave-docker"
-	defaultGoWaveImage = "ghcr.io/aaasazan/gowave:latest"
+	defaultGoWaveImage = "ghcr.io/sorried/gowave-light:latest"
 	cliWrapperPath     = "/usr/local/bin/gowave"
 	systemdUnit        = "gowave.service"
 	// Fixed by the `name:` and `container_name:` entries of the compose file.

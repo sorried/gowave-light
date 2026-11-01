@@ -57,13 +57,13 @@ export const useUpdatesStore = create<IActions & IState>()(
 
                             const starsResponse = await axios.get<{
                                 totalStars: number
-                            }>('https://ungh.cc/stars/aaaSaZaN/gowave')
+                            }>('https://ungh.cc/stars/sorried/gowave-light')
 
                             const versionResponse = await axios.get<{
                                 release: {
                                     tag: string
                                 }
-                            }>('https://ungh.cc/repos/aaaSaZaN/gowave/releases/latest')
+                            }>('https://ungh.cc/repos/sorried/gowave-light/releases/latest')
 
                             set({
                                 gowaveInfo: {
@@ -92,7 +92,7 @@ export const useUpdatesStore = create<IActions & IState>()(
         {
             name: 'updatesStore',
             storage: createJSONStorage(() => localStorage),
-            version: 3,
+            version: 4,
             migrate: () => ({ ...initialState }),
             partialize: (state) => ({
                 lastUpdateTimestamp: state.lastUpdateTimestamp,

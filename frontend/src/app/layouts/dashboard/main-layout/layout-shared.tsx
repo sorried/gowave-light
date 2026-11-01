@@ -3,7 +3,7 @@ import { SidebarLogoShared, SidebarTitleShared } from '@shared/ui/sidebar'
 import { Outlet, ScrollRestoration } from 'react-router'
 
 export const DASHBOARD_LINKS = {
-    githubLink: 'https://github.com/aaaSaZaN/gowave'
+    githubLink: 'https://github.com/sorried/gowave-light'
 } as const
 
 type LayoutMainProps = Omit<React.ComponentProps<typeof AppShell.Main>, 'children'>

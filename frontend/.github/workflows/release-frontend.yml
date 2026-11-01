@@ -73,7 +73,7 @@ jobs:
           body: |
             # 🌊 GoWave Frontend v${{ github.ref_name }}
 
-            [Source and issues](https://github.com/aaaSaZaN/gowave)
+            [Source and issues](https://github.com/sorried/gowave-light)
 
             ${{ env.CHANGELOG }}
 

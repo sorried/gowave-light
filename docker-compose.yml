@@ -5,7 +5,7 @@ name: gowave
 
 services:
   gowave:
-    image: ${GOWAVE_IMAGE:-ghcr.io/aaasazan/gowave:latest}
+    image: ${GOWAVE_IMAGE:-ghcr.io/sorried/gowave-light:latest}
     container_name: gowave
     # Other containers on gowave-network (the subscription page) reach the
     # panel at http://gowave:3000.

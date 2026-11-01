@@ -4,7 +4,7 @@ name: Dev build
 #   - the rolling "dev" pre-release (releases/download/dev/...), recreated on each
 #     build so it stays on top of the Releases page; releases/latest and the
 #     stable updater never see it;
-#   - Docker tags ghcr.io/<owner>/gowave:dev and :dev-<sha>; "latest" is untouched.
+#   - Docker tags ghcr.io/<owner>/gowave-light:dev and :dev-<sha>; "latest" is untouched.
 # Stable releases still come only from v* tags (release.yml).
 on:
   push:
@@ -100,7 +100,7 @@ jobs:
           {
             echo "Unstable build of \`main\` at ${GITHUB_SHA}."
             echo
-            echo "Install or switch to it from the panel (Build Info → dev) or with \`install.sh --dev\`. Docker: \`ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/gowave:dev\`."
+            echo "Install or switch to it from the panel (Build Info → dev) or with \`install.sh --dev\`. Docker: \`ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/gowave-light:dev\`."
             echo
             echo "### Latest commit"
             git log -1 --format='%s%n%n%b' "$GITHUB_SHA"
@@ -126,7 +126,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Image name
-        run: echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/gowave" >> "$GITHUB_ENV"
+        run: echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/gowave-light" >> "$GITHUB_ENV"
 
       - name: Image tags
         id: meta

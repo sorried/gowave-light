@@ -243,7 +243,7 @@ export function BuildInfoModal({ gowaveMetadata }: BuildInfoModalProps) {
             <Group gap="sm" grow>
                 <Button
                     component="a"
-                    href="https://github.com/aaaSaZaN/gowave"
+                    href="https://github.com/sorried/gowave-light"
                     leftSection={<TbBrandGithub size={16} />}
                     radius="md"
                     size="sm"

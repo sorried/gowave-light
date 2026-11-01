@@ -189,16 +189,16 @@ func TestReadRequestedChannelRejectsUntrustedRequests(t *testing.T) {
 	if got := readRequestedChannel(target); got != ChannelDev {
 		t.Errorf("valid request: %q", got)
 	}
-	if got := releaseDownloadBase(ChannelDev); !strings.HasSuffix(got, "/releases/download/dev/") {
+	if got := releaseDownloadBase(ChannelDev); got != "https://github.com/sorried/gowave-light/releases/download/dev/" {
 		t.Errorf("dev download base %q", got)
 	}
-	if got := releaseDownloadBase(ChannelStable); !strings.HasSuffix(got, "/releases/latest/download/") {
+	if got := releaseDownloadBase(ChannelStable); got != "https://github.com/sorried/gowave-light/releases/latest/download/" {
 		t.Errorf("stable download base %q", got)
 	}
 }
 
 func TestInstallerCommandPassesChannelToScript(t *testing.T) {
-	want := `sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/aaaSaZaN/gowave/main/install.sh)" _ --update --dev`
+	want := `sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/sorried/gowave-light/main/install.sh)" _ --update --dev`
 	if got := installerCommand(ChannelDev); got != want {
 		t.Fatalf("installerCommand(dev) = %q, want %q", got, want)
 	}

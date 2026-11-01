@@ -82,8 +82,8 @@ export const CreateNodeStep1Connection = ({ form, onNext, secretKey, port }: IPr
                         fw="700"
                         href={
                             i18n.language.startsWith('ru')
-                                ? 'https://aaasazan.github.io/gowave-docs/install/node/install/'
-                                : 'https://aaasazan.github.io/gowave-docs/en/install/node/install/'
+                                ? 'https://sorried.github.io/gowave-light-docs/install/node/install/'
+                                : 'https://sorried.github.io/gowave-light-docs/en/install/node/install/'
                         }
                         inherit
                         rel="noopener noreferrer"

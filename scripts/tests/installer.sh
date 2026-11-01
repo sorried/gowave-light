@@ -97,11 +97,11 @@ verify_panel_path --legacy || fail 'old bundle rejected during recovery'
 reset_channel() { GOWAVE_CHANNEL=''; GOWAVE_VERSION=latest; GOWAVE_ACTION=''; GOWAVE_LANG=''; }
 reset_channel; parse_args --dev
 [ "$GOWAVE_CHANNEL/$GOWAVE_VERSION" = dev/dev ] || fail '--dev'
-[ "$(panel_image)" = ghcr.io/aaasazan/gowave:dev ] || fail 'dev image'
+[ "$(panel_image)" = ghcr.io/sorried/gowave-light:dev ] || fail 'dev image'
 reset_channel; parse_args --channel=stable --update --lang en
 [ "$GOWAVE_CHANNEL/$GOWAVE_VERSION/$GOWAVE_ACTION/$GOWAVE_LANG" = stable/latest/update/en ] || fail '--channel=stable --update'
 reset_channel; GOWAVE_VERSION=v1.2.3; parse_args
-[ "$GOWAVE_CHANNEL" = stable ] && [ "$(panel_image)" = ghcr.io/aaasazan/gowave:1.2.3 ] || fail 'pinned version'
+[ "$GOWAVE_CHANNEL" = stable ] && [ "$(panel_image)" = ghcr.io/sorried/gowave-light:1.2.3 ] || fail 'pinned version'
 reset_channel; GOWAVE_VERSION=dev; parse_args
 [ "$GOWAVE_CHANNEL" = dev ] || fail 'GOWAVE_VERSION=dev'
 for args in '--dev --version v1.2.3' '--channel nightly' '--version 1.2' '--lang de' '--bogus' '--channel'; do
@@ -126,10 +126,10 @@ reset_channel; GOWAVE_CHANNEL=dev; choose_channel stable
 
 # Docker: the channel is read from and written to GOWAVE_IMAGE; custom images stay.
 MODE=docker
-printf 'GOWAVE_IMAGE=ghcr.io/aaasazan/gowave:latest\n' >"$ENV_FILE"
+printf 'GOWAVE_IMAGE=ghcr.io/sorried/gowave-light:latest\n' >"$ENV_FILE"
 [ "$(installed_channel)" = stable ] || fail 'docker stable channel'
 reset_channel; GOWAVE_CHANNEL=dev; apply_channel; set_docker_image >/dev/null
-[ "$(env_get "$ENV_FILE" GOWAVE_IMAGE)" = ghcr.io/aaasazan/gowave:dev ] || fail 'docker switch to dev'
+[ "$(env_get "$ENV_FILE" GOWAVE_IMAGE)" = ghcr.io/sorried/gowave-light:dev ] || fail 'docker switch to dev'
 [ "$(installed_channel)" = dev ] || fail 'docker dev channel'
 printf 'GOWAVE_IMAGE=registry.local/gowave:custom\n' >"$ENV_FILE"
 set_docker_image 2>/dev/null

@@ -1,10 +1,10 @@
 import { panelUrl } from '@shared/lib/panel-path'
 export const app = {
     name: 'GoWave',
-    githubRepo: 'https://github.com/aaaSaZaN/gowave',
-    githubStars: 'https://github.com/aaaSaZaN/gowave/stargazers',
-    githubIssues: 'https://github.com/aaaSaZaN/gowave/issues',
-    githubOrg: 'https://github.com/aaaSaZaN',
+    githubRepo: 'https://github.com/sorried/gowave-light',
+    githubStars: 'https://github.com/sorried/gowave-light/stargazers',
+    githubIssues: 'https://github.com/sorried/gowave-light/issues',
+    githubOrg: 'https://github.com/sorried',
     configEditor: {
         wasmUrl: panelUrl('/assets/main.wasm'),
         wasmJsUrl: panelUrl('/assets/wasm_exec.js'),

@@ -24,8 +24,8 @@ var (
 )
 
 const (
-	githubRepo  = "aaaSaZaN/gowave"
-	dockerImage = "ghcr.io/aaasazan/gowave"
+	githubRepo  = "sorried/gowave-light"
+	dockerImage = "ghcr.io/sorried/gowave-light"
 )
 
 // CurrentChannel is the channel this binary was built for.
