@@ -54,3 +54,13 @@ node-ts/
 node-go/
 openapi.json
 !backend-go/internal/contracts/openapi.json
+
+# AI AGENTS
+AGENTS.md
+AGENTS.MD
+agents.md
+agents.MD
+CLAUDE.MD
+CLAUDE.md
+claude.MD
+claude.md
