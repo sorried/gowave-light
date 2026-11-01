@@ -83,7 +83,7 @@ try {
             clearTimeout(timeout)
             reject(new Error('Chromium debugging connection failed'))
         }
-        socket.onopen = () =>
+        const evaluate = () =>
             socket.send(
                 JSON.stringify({
                     id: 1,
@@ -100,9 +100,14 @@ try {
                     }
                 })
             )
+        socket.onopen = evaluate
         socket.onmessage = (event) => {
             const message = JSON.parse(event.data)
             if (message.id !== 1) return
+            if (message.error?.message === 'Execution context was destroyed.') {
+                setTimeout(evaluate, 50)
+                return
+            }
             clearTimeout(timeout)
             resolve(message.result?.result?.value || JSON.stringify(message))
         }
@@ -110,7 +115,7 @@ try {
     if (!String(result).startsWith('passed:')) throw new Error(String(result))
     process.stdout.write('Browser smoke tests passed\n')
 } finally {
-    if (browser && browser.exitCode === null) {
+    if (browser?.pid && browser.exitCode === null) {
         browser.kill()
         await once(browser, 'exit')
     }
