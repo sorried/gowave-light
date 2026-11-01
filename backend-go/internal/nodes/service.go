@@ -1166,22 +1166,6 @@ func (s *Service) SyncAllUsersToNode(node *database.Node) {
 	}
 }
 
-func (s *Service) SyncUserToNodes(user *database.User, previous *string) {
-	if user == nil {
-		return
-	}
-	if err := jobs.EnqueueUser(s.db, user, previous, false); err != nil {
-		log.Printf("[NODES] enqueue user: %v", err)
-	}
-}
-func (s *Service) RemoveUserFromNodes(user *database.User) {
-	if user == nil {
-		return
-	}
-	if err := jobs.EnqueueUser(s.db, user, nil, true); err != nil {
-		log.Printf("[NODES] enqueue removal: %v", err)
-	}
-}
 func (s *Service) SyncAllUsersToConnectedNodes() {
 	var targets []database.Node
 	if err := s.db.Where("is_disabled = ? AND is_connected = ?", false, true).Find(&targets).Error; err != nil {

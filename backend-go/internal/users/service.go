@@ -16,26 +16,12 @@ import (
 	"gorm.io/gorm/clause"
 )
 
-type NodeUserSyncer interface {
-	SyncUserToNodes(user *database.User, prevVlessUUID *string)
-	RemoveUserFromNodes(user *database.User)
-}
-
 type Service struct {
-	db     *gorm.DB
-	syncer NodeUserSyncer
+	db *gorm.DB
 }
 
-func NewService(db *gorm.DB, syncer ...NodeUserSyncer) *Service {
-	var s NodeUserSyncer
-	if len(syncer) > 0 {
-		s = syncer[0]
-	}
-	return &Service{db: db, syncer: s}
-}
-
-func (s *Service) SetSyncer(syncer NodeUserSyncer) {
-	s.syncer = syncer
+func NewService(db *gorm.DB) *Service {
+	return &Service{db: db}
 }
 
 const alphabet = "0123456789ABCDEFGHJKLMNPQRSTUVWXYZ_abcdefghjkmnopqrstuvwxyz-"
@@ -226,9 +212,6 @@ func (s *Service) Create(dto CreateUserDTO) (*database.User, error) {
 	}
 
 	_ = s.loadSquadsForUsers([]*database.User{user})
-	if s.syncer != nil && strings.ToUpper(user.Status) == "ACTIVE" {
-		s.syncer.SyncUserToNodes(user, nil)
-	}
 	return user, nil
 }
 

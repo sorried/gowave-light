@@ -30,10 +30,6 @@ func NewService(db *gorm.DB, syncer ...NodeProfileSyncer) *Service {
 	return &Service{db: db, syncer: s}
 }
 
-func (s *Service) SetSyncer(syncer NodeProfileSyncer) {
-	s.syncer = syncer
-}
-
 func (s *Service) DB() *gorm.DB {
 	return s.db
 }

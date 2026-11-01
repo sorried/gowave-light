@@ -17,18 +17,12 @@ import (
 	"gorm.io/gorm/clause"
 )
 
-type UserSyncer interface {
-	SyncUserToNodes(*database.User, *string)
-	RemoveUserFromNodes(*database.User)
-}
-
 // Scheduler runs upstream's periodic tasks. Calendar tasks keep a cursor in
 // scheduled_executions so a restart neither repeats nor skips a run: missed
 // occurrences are caught up (bounded) the next time the scheduler ticks.
 type Scheduler struct {
-	db     *gorm.DB
-	syncer UserSyncer
-	cfg    *config.Config
+	db  *gorm.DB
+	cfg *config.Config
 	// nodeNotified mirrors upstream's in-memory TRAFFIC_NOTIFY latch.
 	nodeNotified map[string]bool
 	// nodeData formats a node for notifications; defaults to basic fields.
@@ -38,15 +32,9 @@ type Scheduler struct {
 // SetNodeFormatter makes node events carry the API node payload.
 func (s *Scheduler) SetNodeFormatter(format func(*database.Node) interface{}) { s.nodeData = format }
 
-func New(db *gorm.DB, syncers ...UserSyncer) *Scheduler {
-	s := &Scheduler{db: db, cfg: &config.Config{}, nodeNotified: map[string]bool{}}
-	if len(syncers) > 0 {
-		s.syncer = syncers[0]
-	}
-	return s
+func New(db *gorm.DB) *Scheduler {
+	return &Scheduler{db: db, cfg: &config.Config{}, nodeNotified: map[string]bool{}}
 }
-
-func (s *Scheduler) SetSyncer(syncer UserSyncer) { s.syncer = syncer }
 
 // SetConfig supplies notification intervals and service switches.
 func (s *Scheduler) SetConfig(cfg *config.Config) { s.cfg = cfg }

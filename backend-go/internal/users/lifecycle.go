@@ -23,9 +23,8 @@ func (s *Service) mutate(query func(*gorm.DB) *gorm.DB, required bool, mutation 
 }
 
 func (s *Service) mutateNotify(query func(*gorm.DB) *gorm.DB, required bool, mutation userMutation, policy eventPolicy) error {
-	var changed []database.User
-	deleted := make(map[uint64]bool)
-	err := s.db.Transaction(func(tx *gorm.DB) error {
+	return s.db.Transaction(func(tx *gorm.DB) error {
+		var changed []database.User
 		selectQuery := query(tx.Model(&database.User{}))
 		if tx.Dialector.Name() == "postgres" {
 			selectQuery = selectQuery.Clauses(clause.Locking{Strength: "UPDATE"})
@@ -60,7 +59,6 @@ func (s *Service) mutateNotify(query func(*gorm.DB) *gorm.DB, required bool, mut
 					return err
 				}
 			}
-			deleted[user.ID] = removed
 			if removed && deletedData != nil {
 				if err := notify.Emit(tx, notify.Event{Name: "user.deleted", Data: deletedData}); err != nil {
 					return err
@@ -83,20 +81,6 @@ func (s *Service) mutateNotify(query func(*gorm.DB) *gorm.DB, required bool, mut
 		}
 		return nil
 	})
-	if err != nil {
-		return err
-	}
-	if s.syncer != nil {
-		for i := range changed {
-			u := &changed[i]
-			if deleted[u.ID] || u.Status != "ACTIVE" {
-				s.syncer.RemoveUserFromNodes(u)
-			} else {
-				s.syncer.SyncUserToNodes(u, nil)
-			}
-		}
-	}
-	return nil
 }
 
 func byIDs(ids []uint64) func(*gorm.DB) *gorm.DB {

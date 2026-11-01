@@ -273,12 +273,9 @@ func NewApp(cfg *config.Config, db *gorm.DB) *App {
 	for _, kind := range []string{"plugin-sync", "plugin-exec", "connections-drop", "geocheck"} {
 		workQueue.Register(kind, nodeService.ApplyCommandJob)
 	}
-	userService.SetSyncer(nodeService)
-	scheduler.SetSyncer(nodeService)
 	scheduler.SetNodeFormatter(nodeService.EventData)
 	nodeHandler := nodes.NewHandler(nodeService)
 	cpService := configprofiles.NewService(db, nodeService)
-	cpService.SetSyncer(nodeService)
 	cpHandler := configprofiles.NewHandler(cpService)
 	subHandler := subscription.NewHandler(db, cfg.SubPublicDomain)
 	metricsExporter := prometheus.NewExporter(db, nodeService)
