@@ -11,13 +11,11 @@ import { ModalsProvider } from '@mantine/modals'
 import { Notifications } from '@mantine/notifications'
 import { theme } from '@shared/constants'
 import { AuthProvider } from '@shared/hocs/auth-provider'
-// import { StrictMode } from 'react'
 import { IsMobileProvider } from '@shared/hocs/is-mobile-provider'
 import { LoadingScreen } from '@shared/ui'
 import { ConnectionStatusOverlay } from '@shared/ui/connection-status-overlay'
 import { NavigationProgress } from '@shared/ui/navigation-progress'
 import { QueryClientProvider } from '@tanstack/react-query'
-// import { hideSplashScreen } from 'vite-plugin-splash-screen/runtime'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { polyfillCountryFlagEmojis } from 'country-flag-emoji-polyfill'
 import dayjs from 'dayjs'
@@ -47,12 +45,7 @@ export function App() {
         }
     }, [])
 
-    // useEffect(() => {
-    //     hideSplashScreen()
-    // }, [])
-
     return (
-        // <StrictMode>
         <I18nextProvider defaultNS="" i18n={i18n}>
             <QueryClientProvider client={queryClient}>
                 {isDev && <ReactQueryDevtools initialIsOpen={false} />}
@@ -85,6 +78,5 @@ export function App() {
                 </AuthProvider>
             </QueryClientProvider>
         </I18nextProvider>
-        // </StrictMode>
     )
 }
