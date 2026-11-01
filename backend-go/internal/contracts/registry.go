@@ -76,7 +76,7 @@ func Lookup(method, path string) ([]Endpoint, bool) {
 }
 
 func AdminOnly(path string) bool {
-	for _, prefix := range []string{"/api/tokens", "/api/auth", "/api/passkeys", "/api/remnawave-settings", "/api/node-ssh", "/api/system/updates", "/api/system/actions"} {
+	for _, prefix := range []string{"/api/tokens", "/api/auth", "/api/passkeys", "/api/remnawave-settings", "/api/node-ssh", "/api/system/updates", "/api/system/actions", "/api/config-profiles/warp"} {
 		if path == prefix || strings.HasPrefix(path, prefix+"/") {
 			return true
 		}

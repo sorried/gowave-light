@@ -35,6 +35,7 @@ import (
 	"gowave/internal/system"
 	"gowave/internal/tokens"
 	"gowave/internal/users"
+	"gowave/internal/warp"
 
 	"github.com/go-chi/chi/v5"
 	chimiddleware "github.com/go-chi/chi/v5/middleware"
@@ -277,6 +278,7 @@ func NewApp(cfg *config.Config, db *gorm.DB) *App {
 	nodeHandler := nodes.NewHandler(nodeService)
 	cpService := configprofiles.NewService(db, nodeService)
 	cpHandler := configprofiles.NewHandler(cpService)
+	warpHandler := warp.NewHandler()
 	subHandler := subscription.NewHandler(db, cfg.SubPublicDomain)
 	metricsExporter := prometheus.NewExporter(db, nodeService)
 	subHandler.SetDisableHistory(cfg.Service.DisableSrhRecords)
@@ -423,6 +425,7 @@ func NewApp(cfg *config.Config, db *gorm.DB) *App {
 		protected.Patch("/api/hosts/bulk/update", cpHandler.BulkUpdateHosts)
 
 		protected.Get("/api/config-profiles/tags", cpHandler.GetConfigProfilesTags)
+		protected.Post("/api/config-profiles/warp/register", warpHandler.Register)
 		protected.Patch("/api/config-profiles/tags", cpHandler.SetConfigProfilesTags)
 		protected.Get("/api/config-profiles/inbounds", cpHandler.GetAllInbounds)
 		protected.Get("/api/config-profiles", cpHandler.GetProfiles)
