@@ -3,7 +3,6 @@ package users
 import (
 	"crypto/rand"
 	"fmt"
-	"math/big"
 	"strconv"
 	"strings"
 	"time"
@@ -30,12 +29,23 @@ func GenerateShortUUID(length int) string {
 	if length <= 0 {
 		length = 16
 	}
-	bytes := make([]byte, length)
-	for i := 0; i < length; i++ {
-		num, _ := rand.Int(rand.Reader, big.NewInt(int64(len(alphabet))))
-		bytes[i] = alphabet[num.Int64()]
+	result := make([]byte, length)
+	var buffer [64]byte
+	const limit = 256 - 256%len(alphabet)
+	for i := 0; i < length; {
+		rand.Read(buffer[:])
+		for _, value := range buffer {
+			if int(value) >= limit {
+				continue
+			}
+			result[i] = alphabet[int(value)%len(alphabet)]
+			i++
+			if i == length {
+				break
+			}
+		}
 	}
-	return string(bytes)
+	return string(result)
 }
 
 // GenerateRandomPassword draws from upstream's nanoid alphabet.
