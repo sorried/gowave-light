@@ -8,6 +8,7 @@ import (
 	prom "gowave/internal/metrics"
 	"log"
 	"math"
+	"slices"
 	"strconv"
 	"strings"
 	"sync"
@@ -173,9 +174,45 @@ func cloneMetrics(m *NodeHotMetrics) *NodeHotMetrics {
 	if m == nil {
 		return nil
 	}
-	data, _ := json.Marshal(m)
-	var snapshot NodeHotMetrics
-	_ = json.Unmarshal(data, &snapshot)
+	snapshot := *m
+	if m.Versions != nil {
+		versions := *m.Versions
+		snapshot.Versions = &versions
+	}
+	if m.System != nil {
+		system := *m.System
+		snapshot.System = &system
+		if system.Plugins != nil {
+			plugins := *system.Plugins
+			system.Plugins = &plugins
+			if plugins.TorrentBlocker != nil {
+				blocker := *plugins.TorrentBlocker
+				plugins.TorrentBlocker = &blocker
+			}
+		}
+		if system.XrayInfo != nil {
+			xray := *system.XrayInfo
+			system.XrayInfo = &xray
+		}
+		if system.System != nil {
+			host := *system.System
+			system.System = &host
+			if host.Info != nil {
+				info := *host.Info
+				info.NetworkInterfaces = slices.Clone(info.NetworkInterfaces)
+				host.Info = &info
+			}
+			if host.Stats != nil {
+				stats := *host.Stats
+				stats.LoadAvg = slices.Clone(stats.LoadAvg)
+				host.Stats = &stats
+				if stats.Interface != nil {
+					network := *stats.Interface
+					stats.Interface = &network
+				}
+			}
+		}
+	}
 	return &snapshot
 }
 
