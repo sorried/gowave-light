@@ -22,7 +22,7 @@ import (
 	"gowave/internal/users"
 )
 
-func subscriptionDB(t *testing.T) (*gorm.DB, *database.User) {
+func subscriptionDB(t testing.TB) (*gorm.DB, *database.User) {
 	t.Helper()
 	db := testdb.Open(t)
 	limit := 1
