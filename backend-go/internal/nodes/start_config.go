@@ -15,15 +15,21 @@ import (
 // inboundUsersHash matches @remnawave/hashed-set 0.0.4. Set membership is
 // order-independent and JavaScript charCodeAt operates on UTF-16 code units.
 func inboundUsersHash(ids []string) string {
-	seen := map[string]bool{}
+	seen := make(map[string]struct{}, len(ids))
 	var high, low uint32
 	for _, id := range ids {
-		if seen[id] {
+		if _, ok := seen[id]; ok {
 			continue
 		}
-		seen[id] = true
+		seen[id] = struct{}{}
 		h, l := uint32(5381), uint32(5387)
-		for _, c := range utf16.Encode([]rune(id)) {
+		for _, c := range id {
+			if c > 0xffff {
+				first, second := utf16.EncodeRune(c)
+				h = h*33 + uint32(first)
+				l = l*65 + uint32(first)*37
+				c = second
+			}
 			h = h*33 + uint32(c)
 			l = l*65 + uint32(c)*37
 		}
@@ -55,7 +61,12 @@ func (s *Service) populateConfigUsers(config map[string]interface{}, profileID s
 			continue
 		}
 		tag, _ := inbound["tag"].(string)
-		var records []database.User
+		var records []struct {
+			ID             uint64
+			VlessUUID      string
+			TrojanPassword string
+			SsPassword     string
+		}
 		query := s.db.Model(&database.User{}).Where("status='ACTIVE' AND id IN (SELECT m.user_id FROM internal_squad_members m JOIN internal_squad_inbounds si ON si.internal_squad_uuid=m.internal_squad_uuid JOIN config_profile_inbounds ib ON ib.uuid=si.inbound_uuid WHERE ib.tag=? AND ib.profile_uuid=?)", tag, profileID).Select("id,vless_uuid,trojan_password,ss_password")
 		if err := query.Find(&records).Error; err != nil {
 			return nil, err
