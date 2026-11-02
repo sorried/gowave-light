@@ -43,6 +43,9 @@ func seedEventUsers(t testing.TB, db *gorm.DB, count int) []uint64 {
 func TestEmitForUsersKeepsPayloadAndTransaction(t *testing.T) {
 	db := testdb.Open(t)
 	ids := seedEventUsers(t, db, 503)
+	if err := db.Delete(&database.UserTraffic{}, ids[len(ids)-1]).Error; err != nil {
+		t.Fatal(err)
+	}
 	notifier, err := notify.New(&config.Config{Notifications: config.NotificationsConfig{WebhookEnabled: true, WebhookURLs: []string{"https://example.com/webhook"}}})
 	if err != nil {
 		t.Fatal(err)
@@ -115,5 +118,17 @@ func BenchmarkEmitForUsers(b *testing.B) {
 		if err := EmitForUsers(db, ids, "user.first_connected", nil, false); err != nil {
 			b.Fatal(err)
 		}
+	}
+}
+
+func TestEmitForUsersBoundsRelationQueries(t *testing.T) {
+	db := testdb.Open(t)
+	ids := seedEventUsers(t, db, 1001)
+	counter := &statementCounter{Interface: db.Logger}
+	if err := EmitForUsers(db.Session(&gorm.Session{Logger: counter}), ids, "user.first_connected", nil, false); err != nil {
+		t.Fatal(err)
+	}
+	if counter.count > 9 {
+		t.Fatalf("bulk event issued %d queries for 1001 users", counter.count)
 	}
 }

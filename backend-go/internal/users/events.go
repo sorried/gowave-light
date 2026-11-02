@@ -110,15 +110,15 @@ func EmitForUsers(db *gorm.DB, ids []uint64, name string, meta interface{}, skip
 			end = len(ids)
 		}
 		err := db.Transaction(func(tx *gorm.DB) error {
-			var batch []database.User
-			if err := tx.Where("id IN ?", ids[start:end]).Find(&batch).Error; err != nil {
+			var batch []*database.User
+			if err := tx.Preload("Traffic").Where("id IN ?", ids[start:end]).Find(&batch).Error; err != nil {
 				return err
 			}
-			for i := range batch {
-				data, err := eventData(tx, &batch[i])
-				if err != nil {
-					return err
-				}
+			if err := loadSquads(tx, batch); err != nil {
+				return err
+			}
+			for _, user := range batch {
+				data := FormatUser(user, subPublicDomain)
 				if err := notify.Emit(tx, notify.Event{Name: name, Data: data, Meta: meta, SkipTelegram: skipTelegram}); err != nil {
 					return err
 				}
