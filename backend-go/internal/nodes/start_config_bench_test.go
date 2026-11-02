@@ -64,3 +64,49 @@ func TestInboundUsersHashUnicode(t *testing.T) {
 		t.Fatalf("unicode hash: %s", actual)
 	}
 }
+
+func TestPopulateConfigUsersKeepsProtocolCredentials(t *testing.T) {
+	db := testdb.Open(t)
+	records := seedReconcileUsers(t, db, 2)
+	if err := db.Model(&database.User{}).Where("id = ?", records[0].ID).Updates(map[string]any{"trojan_password": "trojan-secret", "ss_password": "ss-secret"}).Error; err != nil {
+		t.Fatal(err)
+	}
+	if err := db.Model(&database.User{}).Where("id = ?", records[1].ID).Update("status", "DISABLED").Error; err != nil {
+		t.Fatal(err)
+	}
+	for _, record := range []any{
+		&database.ConfigProfile{UUID: "profile", Name: "profile", Config: `{}`},
+		&database.ConfigProfileInbound{UUID: "inbound", ProfileUUID: "profile", Tag: "tag", Type: "vless", RawInbound: `{}`},
+		&database.InternalSquad{UUID: "squad", Name: "squad"},
+		&database.InternalSquadInbound{InternalSquadUUID: "squad", InboundUUID: "inbound"},
+		&database.InternalSquadMember{InternalSquadUUID: "squad", UserID: records[0].ID},
+		&database.InternalSquadMember{InternalSquadUUID: "squad", UserID: records[1].ID},
+	} {
+		if err := db.Create(record).Error; err != nil {
+			t.Fatal(err)
+		}
+	}
+	service := &Service{db: db}
+	for _, fixture := range []struct{ protocol, method, key, value string }{
+		{"vless", "", "id", records[0].VlessUUID},
+		{"trojan", "", "password", "trojan-secret"},
+		{"shadowsocks", "chacha20-ietf-poly1305", "password", "ss-secret"},
+		{"shadowsocks", "2022-blake3-aes-128-gcm", "password", "c3Mtc2VjcmV0"},
+		{"hysteria", "", "auth", records[0].VlessUUID},
+	} {
+		settings := map[string]any{"method": fixture.method}
+		inbound := map[string]any{"tag": "tag", "protocol": fixture.protocol, "settings": settings}
+		config := map[string]any{"inbounds": []any{inbound}}
+		if _, err := service.populateConfigUsers(config, "profile"); err != nil {
+			t.Fatal(err)
+		}
+		clients := settings["clients"].([]any)
+		if len(clients) != 1 {
+			t.Fatalf("%s: clients=%d", fixture.protocol, len(clients))
+		}
+		client := clients[0].(map[string]any)
+		if client[fixture.key] != fixture.value || client["email"] != fmt.Sprint(records[0].ID) {
+			t.Fatalf("%s: invalid credentials", fixture.protocol)
+		}
+	}
+}
