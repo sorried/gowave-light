@@ -361,25 +361,38 @@ func (h *Handler) hostsForUser(userID uint64, withDisabled, withHidden bool) ([]
 		return nil, err
 	}
 	inboundUUIDs, templateUUIDs := []string{}, []string{}
+	inboundUses := make(map[string]int)
+	templates := map[string]any{}
 	for _, row := range rows {
 		if row.ConfigProfileInboundUUID != nil {
-			inboundUUIDs = append(inboundUUIDs, *row.ConfigProfileInboundUUID)
+			uuid := *row.ConfigProfileInboundUUID
+			if inboundUses[uuid] == 0 {
+				inboundUUIDs = append(inboundUUIDs, uuid)
+			}
+			inboundUses[uuid]++
 		}
 		if row.XrayJsonTemplateUUID != nil {
-			templateUUIDs = append(templateUUIDs, *row.XrayJsonTemplateUUID)
+			uuid := *row.XrayJsonTemplateUUID
+			if _, seen := templates[uuid]; !seen {
+				templateUUIDs = append(templateUUIDs, uuid)
+				templates[uuid] = nil
+			}
 		}
 	}
-	inbounds := map[string]database.ConfigProfileInbound{}
+	type inboundConfig struct {
+		tag   string
+		value any
+	}
+	inbounds := map[string]inboundConfig{}
 	if len(inboundUUIDs) > 0 {
 		var list []database.ConfigProfileInbound
 		if err := h.db.Select("uuid", "raw_inbound", "tag").Where("uuid IN ?", inboundUUIDs).Find(&list).Error; err != nil {
 			return nil, err
 		}
 		for _, inbound := range list {
-			inbounds[inbound.UUID] = inbound
+			inbounds[inbound.UUID] = inboundConfig{tag: inbound.Tag, value: parseJSONColumn(inbound.RawInbound)}
 		}
 	}
-	templates := map[string]any{}
 	if len(templateUUIDs) > 0 {
 		var list []database.SubscriptionTemplate
 		if err := h.db.Select("uuid", "template_json").Where("uuid IN ?", templateUUIDs).Find(&list).Error; err != nil {
@@ -403,7 +416,12 @@ func (h *Handler) hostsForUser(userID uint64, withDisabled, withHidden bool) ([]
 		if row.XrayJsonTemplateUUID != nil {
 			template = templates[*row.XrayJsonTemplateUUID]
 		}
-		hosts = append(hosts, templateHost(row, parseJSONColumn(inbound.RawInbound), inbound.Tag, template))
+		raw := inbound.value
+		if inboundUses[*row.ConfigProfileInboundUUID] > 1 {
+			raw = ojson.Clone(raw)
+		}
+		inboundUses[*row.ConfigProfileInboundUUID]--
+		hosts = append(hosts, templateHost(row, raw, inbound.tag, template))
 	}
 	return hosts, nil
 }
