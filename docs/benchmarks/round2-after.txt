@@ -1,0 +1,33 @@
+goos: linux
+goarch: amd64
+pkg: gowave/internal/metrics
+cpu: 11th Gen Intel(R) Core(TM) i7-11700F @ 2.50GHz
+BenchmarkRegistryText 	    2026	    294800 ns/op	  512441 B/op	    2931 allocs/op
+BenchmarkRegistryText 	    1966	    302124 ns/op	  512441 B/op	    2931 allocs/op
+BenchmarkRegistryText 	    2013	    302950 ns/op	  512441 B/op	    2931 allocs/op
+BenchmarkMetricSet    	 4010241	       149.4 ns/op	     112 B/op	       3 allocs/op
+BenchmarkMetricSet    	 3909445	       149.1 ns/op	     112 B/op	       3 allocs/op
+BenchmarkMetricSet    	 4086819	       145.7 ns/op	     112 B/op	       3 allocs/op
+PASS
+ok  	gowave/internal/metrics	3.583s
+goos: linux
+goarch: amd64
+pkg: gowave/internal/nodes
+cpu: 11th Gen Intel(R) Core(TM) i7-11700F @ 2.50GHz
+BenchmarkInboundUsersHash    	    8808	     68834 ns/op	   54632 B/op	       8 allocs/op
+BenchmarkInboundUsersHash    	    9452	     68927 ns/op	   54632 B/op	       8 allocs/op
+BenchmarkInboundUsersHash    	    8602	     69924 ns/op	   54632 B/op	       8 allocs/op
+BenchmarkPopulateConfigUsers 	     193	   3271926 ns/op	  908008 B/op	   21790 allocs/op
+BenchmarkPopulateConfigUsers 	     182	   3277143 ns/op	  907998 B/op	   21790 allocs/op
+BenchmarkPopulateConfigUsers 	     183	   3137286 ns/op	  907975 B/op	   21789 allocs/op
+PASS
+ok  	gowave/internal/nodes	3.835s
+goos: linux
+goarch: amd64
+pkg: gowave/internal/users
+cpu: 11th Gen Intel(R) Core(TM) i7-11700F @ 2.50GHz
+BenchmarkEmitForUsers 	      52	  10254329 ns/op	 3153112 B/op	   77677 allocs/op
+BenchmarkEmitForUsers 	      62	  11238679 ns/op	 3152978 B/op	   77676 allocs/op
+BenchmarkEmitForUsers 	      52	  10803179 ns/op	 3153081 B/op	   77675 allocs/op
+PASS
+ok  	gowave/internal/users	1.886s

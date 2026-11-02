@@ -1,0 +1,12 @@
+goos: linux
+goarch: amd64
+pkg: gowave/internal/subscription
+cpu: 11th Gen Intel(R) Core(TM) i7-11700F @ 2.50GHz
+BenchmarkHostsForUser/1         	    3625	    159255 ns/op	   76392 B/op	     378 allocs/op
+BenchmarkHostsForUser/1         	    3405	    161278 ns/op	   76390 B/op	     378 allocs/op
+BenchmarkHostsForUser/1         	    3704	    149612 ns/op	   76390 B/op	     378 allocs/op
+BenchmarkHostsForUser/50        	     345	   1722047 ns/op	 1699480 B/op	   10105 allocs/op
+BenchmarkHostsForUser/50        	     351	   1691602 ns/op	 1699477 B/op	   10105 allocs/op
+BenchmarkHostsForUser/50        	     358	   1675144 ns/op	 1699479 B/op	   10105 allocs/op
+PASS
+ok  	gowave/internal/subscription	3.564s
