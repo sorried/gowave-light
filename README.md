@@ -4,6 +4,8 @@
 
 [исходники](https://github.com/sorried/gowave-light/tree/main) · [документация](https://sorried.github.io/gowave-light-docs/) · [релизы](https://github.com/sorried/gowave-light/releases)
 
+[подключение Cloudflare WARP](docs/warp.md) настраивается в редакторе профиля кнопкой `WARP`.
+
 ## интерфейс
 
 снимки локальной панели с демонстрационными пользователями.
