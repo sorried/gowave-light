@@ -6,7 +6,7 @@ package metrics
 
 import (
 	"math"
-	"sort"
+	"slices"
 	"strings"
 	"sync"
 
@@ -45,12 +45,17 @@ type Metric struct {
 // hash is prom-client's hashObject: label names sorted.
 func hash(labels []Label) string {
 	sorted := append([]Label(nil), labels...)
-	sort.Slice(sorted, func(i, j int) bool { return sorted[i].Name < sorted[j].Name })
-	parts := make([]string, len(sorted))
+	slices.SortFunc(sorted, func(a, b Label) int { return strings.Compare(a.Name, b.Name) })
+	var key strings.Builder
 	for i, label := range sorted {
-		parts[i] = label.Name + ":" + label.Value
+		if i > 0 {
+			key.WriteByte(',')
+		}
+		key.WriteString(label.Name)
+		key.WriteByte(':')
+		key.WriteString(label.Value)
 	}
-	return strings.Join(parts, ",")
+	return key.String()
 }
 
 func (m *Metric) entry(labels []Label) *sample {
@@ -69,7 +74,7 @@ func (m *Metric) Set(value float64, labels []Label) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 	entry := m.entry(labels)
-	entry.labels = append([]Label(nil), labels...)
+	entry.labels = append(entry.labels[:0], labels...)
 	entry.value = value
 }
 
@@ -186,9 +191,20 @@ const ContentType = "text/plain; version=0.0.4; charset=utf-8"
 
 // Text is registry.metrics() in the Prometheus text format.
 func (r *Registry) Text() string {
-	blocks := make([]string, 0, len(r.metrics))
-	for _, metric := range r.metrics {
-		lines := []string{"# HELP " + escapeHelp(metric.name) + " " + escapeHelp(metric.help), "# TYPE " + escapeHelp(metric.name) + " " + metric.kind}
+	var text strings.Builder
+	for i, metric := range r.metrics {
+		if i > 0 {
+			text.WriteString("\n\n")
+		}
+		name := escapeHelp(metric.name)
+		text.WriteString("# HELP ")
+		text.WriteString(name)
+		text.WriteByte(' ')
+		text.WriteString(escapeHelp(metric.help))
+		text.WriteString("\n# TYPE ")
+		text.WriteString(name)
+		text.WriteByte(' ')
+		text.WriteString(metric.kind)
 		for _, s := range metric.Samples() {
 			labels := s.Labels
 			for _, label := range r.defaultLabels {
@@ -203,17 +219,25 @@ func (r *Registry) Text() string {
 					labels = append(labels, label)
 				}
 			}
-			parts := make([]string, len(labels))
-			for i, label := range labels {
-				parts[i] = label.Name + `="` + escapeLabelValue(label.Value) + `"`
+			text.WriteByte('\n')
+			text.WriteString(name)
+			if len(labels) > 0 {
+				text.WriteByte('{')
+				for i, label := range labels {
+					if i > 0 {
+						text.WriteByte(',')
+					}
+					text.WriteString(label.Name)
+					text.WriteString(`="`)
+					text.WriteString(escapeLabelValue(label.Value))
+					text.WriteByte('"')
+				}
+				text.WriteByte('}')
 			}
-			line := escapeHelp(metric.name)
-			if len(parts) > 0 {
-				line += "{" + strings.Join(parts, ",") + "}"
-			}
-			lines = append(lines, line+" "+formatValue(s.Value))
+			text.WriteByte(' ')
+			text.WriteString(formatValue(s.Value))
 		}
-		blocks = append(blocks, strings.Join(lines, "\n"))
 	}
-	return strings.Join(blocks, "\n\n") + "\n"
+	text.WriteByte('\n')
+	return text.String()
 }
